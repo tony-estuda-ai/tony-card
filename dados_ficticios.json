@@ -1,0 +1,43 @@
+{
+  "cartoes": [
+    {
+      "id": 1,
+      "nome": "Nubank",
+      "limite": 5000.0,
+      "fechamento": 1,
+      "vencimento": 10
+    },
+    {
+      "id": 2,
+      "nome": "Banco Inter",
+      "limite": 3000.0,
+      "fechamento": 15,
+      "vencimento": 22
+    },
+    {
+      "id": 3,
+      "nome": "Banco do Brasil",
+      "limite": 6000.0,
+      "fechamento": 1,
+      "vencimento": 10
+    },
+    {
+      "id": 4,
+      "nome": "Sicoob Credicitrus",
+      "limite": 4500.0,
+      "fechamento": 25,
+      "vencimento": 5
+    }
+  ],
+  "compras": [
+    {
+      "data": "08/06/2026",
+      "descricao": "Churrasco com os Amigos",
+      "categoria": "Alimentação",
+      "cartao": "Sicoob Credicitrus",
+      "cartao_id": 4,
+      "parcelas": "1/1",
+      "valor": 150.00
+    }
+  ]
+}
