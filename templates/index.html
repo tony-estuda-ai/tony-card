@@ -219,5 +219,26 @@
       crossorigin="anonymous"
     ></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+    function salvarEdicao(idCartao, novoNome, novoLimite) {
+        const dados = {
+            id: idCartao,
+            banco: novoNome,
+            limite_total: novoLimite
+        };
+
+        fetch('/api/atualizar_cartao', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("Sucesso: " + data.mensagem);
+            location.reload(); // Recarrega a página para atualizar os dados
+    })
+    .catch(error => console.error('Erro:', error));
+}
+</script>
   </body>
 </html>
