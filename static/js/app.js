@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="fw-bold ${nomeTratado.includes('credicitrus') ? 'text-white-50' : 'text-secondary'}">R$ ${limiteTotal.toFixed(2).replace('.', ',')}</span>
                         </div>
                     </div>
+                    <button onclick="editarCartao('${id}', '${nome}', '${limiteTotal}')" class="btn btn-sm btn-outline-primary mt-2">Editar</button>
                 </div>
             `;
             grid.insertAdjacentHTML('beforeend', cardHtml);
@@ -178,3 +179,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// Função para disparar a edição
+function editarCartao(id, bancoAtual, limiteAtual) {
+    let novoBanco = prompt("Digite o novo nome do banco:", bancoAtual);
+    let novoLimite = prompt("Digite o novo limite total:", limiteAtual);
+
+    if (novoBanco !== null && novoLimite !== null) {
+        salvarEdicao(id, novoBanco, novoLimite);
+    }
+}
