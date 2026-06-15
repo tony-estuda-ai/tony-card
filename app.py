@@ -61,3 +61,24 @@ def sair():
 
 if __name__ == '__main__':
     app.run(debug=True)
+    # --- Rota para Atualizar Dados ---
+    @app.route('/api/atualizar_cartao', methods=['POST'])
+    def atualizar_cartao():
+        if 'usuario_logado' not in session:
+            return jsonify({"erro": "Não autorizado"}), 401
+    
+        dados_recebidos = request.json
+        dados = carregar_dados() # Usa sua função existente
+    
+        # Atualiza o cartão correspondente no arquivo JSON
+        cartao_id = dados_recebidos.get('id')
+        for cartao in dados['cartoes']:
+            if cartao['id'] == cartao_id:
+                cartao.update(dados_recebidos)
+                break
+            
+        # Salva as alterações
+        with open('dados_ficticios.json', 'w', encoding='utf-8') as f:
+            json.dump(dados, f, indent=4, ensure_ascii=False)
+        
+        return jsonify({"status": "sucesso", "mensagem": "Dados atualizados"})
