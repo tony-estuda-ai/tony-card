@@ -199,26 +199,33 @@
       crossorigin="anonymous"
     ></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    <script>
-    function salvarEdicao(idCartao, novoNome, novoLimite) {
-        const dados = {
-            id: idCartao,
-            banco: novoNome,
-            limite_total: novoLimite
-        };
+ <div class="modal fade" id="modalEdicao" tabindex="-1" aria-labelledby="modalEdicaoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEdicaoLabel">Editar Cartão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="mb-3">
+          <label for="edit-nome" class="form-label">Nome do Banco</label>
+          <input type="text" class="form-control" id="edit-nome">
+        </div>
+        <div class="mb-3">
+          <label for="edit-limite" class="form-label">Limite Total</label>
+          <input type="number" class="form-control" id="edit-limite">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="confirmarEdicao()">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        fetch('/api/atualizar_cartao', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados)
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert("Sucesso: " + data.mensagem);
-            location.reload(); // Recarrega a página para atualizar os dados
-    })
-    .catch(error => console.error('Erro:', error));
-}
-</script>
+</body>
+</html>   
   </body>
 </html>
