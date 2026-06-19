@@ -80,32 +80,29 @@ def sair():
 
 @app.route('/api/cartoes/editar', methods=['POST'])
 def editar_cartao():
-    try:
-        from flask import request # Garante que o request está disponível
-        dados = request.json
-        card_id = int(dados.get('id'))
-        novo_nome = dados.get('nome')
-        novo_limite = float(dados.get('limite'))
+    import os
+    dados = request.json
+    card_id = int(dados.get('id'))
+    novo_nome = dados.get('nome')
+    novo_limite = float(dados.get('limite'))
 
-        # 1. Abre o arquivo e lê os dados atuais
-        import json
+    try:
         with open('dados_ficticios.json', 'r', encoding='utf-8') as f:
             data = json.load(f)
 
-        # 2. Procura o cartão correto e atualiza os valores
         for cartao in data.get('cartoes', []):
             if cartao.get('id') == card_id:
                 cartao['nome'] = novo_nome
                 cartao['limite'] = novo_limite
                 break
 
-        # 3. Salva o arquivo com os novos dados
         with open('dados_ficticios.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
+            f.flush()
+            os.fsync(f.fileno())
 
         return jsonify({'status': 'sucesso'})
     except Exception as e:
         return jsonify({'status': 'erro', 'message': str(e)}), 500
-
 if __name__ == '__main__':
     app.run(debug=True)
