@@ -169,6 +169,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     window.carregarOpcoesFormulario = function(cartoes) { 
-        /* Mantém a estrutura para o formulário */ 
+        // Busca o campo de seleção no formulário
+        const selectCartao = document.getElementById('cartao');
+        if (!selectCartao) return;
+
+        // Limpa a mensagem de "Carregando..." e cria a opção padrão
+        selectCartao.innerHTML = '<option value="" disabled selected>Selecione o cartão...</option>';
+
+        // Adiciona cada cartão que veio da API como uma opção no formulário
+        cartoes.forEach(cartao => {
+            const nomeBanco = cartao.nome || cartao.banco || 'Cartão Desconhecido';
+            const option = document.createElement('option');
+            
+            // Usamos o nome do banco como valor para manter a compatibilidade com o filtro
+            option.value = nomeBanco; 
+            option.textContent = nomeBanco;
+            
+            selectCartao.appendChild(option);
+        });
     }
 });
