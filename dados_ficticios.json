@@ -27,6 +27,34 @@
       "limite": 4500.0,
       "fechamento": 25,
       "vencimento": 5
+   },
+    {
+      "id": 5,
+      "nome": "Itaú",
+      "limite": 3500.0,
+      "fechamento": 12,
+      "vencimento": 17
+    },
+    {
+      "id": 6,
+      "nome": "Caixa Econômica Federal",
+      "limite": 2000.0,
+      "fechamento": 5,
+      "vencimento": 10
+    },
+    {
+      "id": 7,
+      "nome": "Bradesco",
+      "limite": 4500.0,
+      "fechamento": 20,
+      "vencimento": 25
+    },
+    {
+      "id": 8,
+      "nome": "Santander",
+      "limite": 6000.0,
+      "fechamento": 8,
+      "vencimento": 15
     }
   ],
   "compras": [
