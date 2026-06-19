@@ -29,10 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const estilosBancos = {
             'credicitrus': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #004D40 0%, #00796B 100%); border: 1px solid #FF8F00;"', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-white-50', btn: 'btn-outline-light' },
-            'itaú': { card: 'bg-white border-start border-warning border-4', bg: '', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-muted', btn: 'btn-outline-warning' },
-            'caixa': { card: 'bg-white border-start border-primary border-4', bg: '', badge: 'bg-primary text-white', bar: 'bg-primary', text: 'text-muted', btn: 'btn-outline-primary' },
-            'bradesco': { card: 'bg-white border-start border-danger border-4', bg: '', badge: 'bg-danger text-white', bar: 'bg-danger', text: 'text-muted', btn: 'btn-outline-danger' },
-            'santander': { card: 'bg-white border-start border-danger border-4', bg: '', badge: 'bg-danger text-white', bar: 'bg-danger', text: 'text-muted', btn: 'btn-outline-danger' },
+            'nubank': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #8A05BE 0%, #5E008A 100%); border: 1px solid #D58BF8;"', badge: 'bg-light text-dark', bar: 'bg-light', text: 'text-white-50', btn: 'btn-outline-light' },
+            'inter': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #FF7A00 0%, #D66600 100%); border: 1px solid #FFB870;"', badge: 'bg-dark text-white', bar: 'bg-dark', text: 'text-white-50', btn: 'btn-outline-light' },
+            'brasil': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #0038A8 0%, #001C54 100%); border: 1px solid #FCE803;"', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-white-50', btn: 'btn-outline-warning' },
+            'itaú': { card: 'text-white', bg: 'style="background-color: #F37021; border: none;"', badge: 'bg-light text-dark', bar: 'bg-light', text: 'text-white-50', btn: 'btn-outline-light' },
+            'caixa': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #005CA9 0%, #007CC0 100%); border: 1px solid #F39200;"', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-white-50', btn: 'btn-outline-light' },
+            'bradesco': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #CC092F 0%, #A80022 100%); border: 1px solid #FF4D6D;"', badge: 'bg-light text-danger', bar: 'bg-light', text: 'text-white-50', btn: 'btn-outline-light' },
+            'santander': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #EC0000 0%, #CC0000 100%); border: 1px solid #FF6666;"', badge: 'bg-light text-danger', bar: 'bg-light', text: 'text-white-50', btn: 'btn-outline-light' },
             'padrao': { card: 'bg-white border', bg: '', badge: 'bg-light text-secondary', bar: 'bg-primary', text: 'text-muted', btn: 'btn-outline-primary' }
         };
 
