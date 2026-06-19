@@ -54,18 +54,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. MODO FOCO
-    window.alternarModoFoco = function(id) {
-    // 3. MODO FOCO E FILTRO DE COMPRAS
+    // 3. MODO FOCO E FILTRO DE COMPRAS (VERSÃO NOME DO BANCO)
     window.alternarModoFoco = function(id) {
         const cards = document.querySelectorAll('.card-banco-item');
         const linhasCompras = document.querySelectorAll('#compras-tabela tr');
         
         modoFocoAtivo = !modoFocoAtivo;
 
-        // Filtra os Cards
+        // Filtra os Cards e guarda o nome do banco do cartão clicado
+        let nomeBancoClicado = "";
         cards.forEach(card => {
             const cardId = card.querySelector('.badge').textContent.replace('#', '');
+            if (cardId === id) {
+                nomeBancoClicado = card.querySelector('h3').textContent.trim();
+            }
+            
             if (modoFocoAtivo) {
                 card.style.display = (cardId !== id) ? 'none' : '';
                 if(cardId === id) card.classList.replace('col-lg-3', 'col-lg-12');
@@ -75,22 +78,19 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Filtra a Tabela de Compras
+        // Filtra a Tabela de Compras comparando pelo NOME do banco
         linhasCompras.forEach(linha => {
-            // Verifica se a linha tem dados (ignora a linha de "Carregando...")
-            if (linha.cells.length > 1) {
-                // A coluna "Cartao" é a 4ª coluna, ou seja, índice 3 (célula 4)
-                const idCartaoNaLinha = linha.cells[3].textContent.trim();
+            if (linha.cells.length > 3) {
+                const nomeBancoNaLinha = linha.cells[3].textContent.trim();
                 
                 if (modoFocoAtivo) {
-                    linha.style.display = (idCartaoNaLinha !== id) ? 'none' : '';
+                    linha.style.display = (nomeBancoNaLinha === nomeBancoClicado) ? '' : 'none';
                 } else {
                     linha.style.display = '';
                 }
             }
         });
-    }
-    // 4. EDIÇÃO MODAL
+    }    // 4. EDIÇÃO MODAL
     window.editarCartao = function(id, bancoAtual, limiteAtual) {
         document.getElementById('edit-id').value = id;
         document.getElementById('edit-nome').value = bancoAtual;
