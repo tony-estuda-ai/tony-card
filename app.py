@@ -30,14 +30,12 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         senha = request.form.get('senha')
-        
         if email in USUARIOS and USUARIOS[email]['senha'] == senha:
             session['usuario_logado'] = email
             session['usuario_nome'] = USUARIOS[email]['nome']
             return redirect(url_for('painel'))
         else:
             return render_template('login.html', erro="E-mail ou senha incorretos!")
-            
     return render_template('login.html')
 
 @app.route('/painel')
@@ -46,13 +44,33 @@ def painel():
         return redirect(url_for('login'))
     return render_template('index.html', nome=session['usuario_nome'])
 
-# NOVA ROTA: Entrega os dados dos cartões para a tela sumir com a lista vermelha
 @app.route('/api/dados')
 def api_dados():
     if 'usuario_logado' not in session:
         return jsonify({"erro": "Não autorizado"}), 401
     dados = carregar_dados()
     return jsonify(dados)
+
+# Rota de atualização (Corrigida e fora do if __name__)
+@app.route('/api/atualizar_cartao', methods=['POST'])
+def atualizar_cartao():
+    if 'usuario_logado' not in session:
+        return jsonify({"erro": "Não autorizado"}), 401
+    
+    dados_recebidos = request.json
+    dados = carregar_dados()
+    
+    cartao_id = str(dados_recebidos.get('id'))
+    for cartao in dados['cartoes']:
+        if str(cartao.get('id')) == cartao_id:
+            cartao['nome'] = dados_recebidos.get('banco')
+            cartao['limite_total'] = float(dados_recebidos.get('limite_total'))
+            break
+            
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(dados, f, indent=4, ensure_ascii=False)
+    
+    return jsonify({"status": "sucesso", "mensagem": "Dados atualizados com sucesso!"})
 
 @app.route('/sair')
 def sair():
@@ -61,24 +79,3 @@ def sair():
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # --- Rota para Atualizar Dados ---
-    @app.route('/api/atualizar_cartao', methods=['POST'])
-    def atualizar_cartao():
-        if 'usuario_logado' not in session:
-            return jsonify({"erro": "Não autorizado"}), 401
-    
-        dados_recebidos = request.json
-        dados = carregar_dados() # Usa sua função existente
-    
-        # Atualiza o cartão correspondente no arquivo JSON
-        cartao_id = dados_recebidos.get('id')
-        for cartao in dados['cartoes']:
-            if cartao['id'] == cartao_id:
-                cartao.update(dados_recebidos)
-                break
-            
-        # Salva as alterações
-        with open('dados_ficticios.json', 'w', encoding='utf-8') as f:
-            json.dump(dados, f, indent=4, ensure_ascii=False)
-        
-        return jsonify({"status": "sucesso", "mensagem": "Dados atualizados"})
