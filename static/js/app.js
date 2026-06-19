@@ -217,3 +217,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// 6. PREENCHIMENTO AUTOMÁTICO DO SELECT DE COMPRAS
+window.carregarCartoesParaSelect = function() {
+    const select = document.getElementById('compra-cartao');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Selecione o cartão...</option>';
+    
+    fetch('/api/cartoes') 
+        .then(res => res.json())
+        .then(data => {
+            data.cartoes.forEach(cartao => {
+                let opt = document.createElement('option');
+                opt.value = cartao.id;
+                opt.innerHTML = cartao.nome;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Erro ao carregar cartões para o select:', err));
+};
+
+// Adiciona o evento para disparar ao abrir o modal de compra
+// Adiciona o evento para disparar ao abrir o modal de compra
+document.getElementById('modalCompra')?.addEventListener('show.bs.modal', window.carregarCartoesParaSelect);
