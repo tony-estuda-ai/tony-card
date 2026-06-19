@@ -129,7 +129,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 5. FUNÇÕES DE SUPORTE MANTIDAS
     window.renderizarTabela = function(compras) { 
-        /* Mantém a estrutura para quando você for integrar a tabela real */ 
+        const tbody = document.getElementById('compras-tabela');
+        if (!tbody) return;
+
+        // Limpa a mensagem de "Carregando compras..."
+        tbody.innerHTML = '';
+
+        // Se não houver compras, exibe uma mensagem amigável
+        if (!compras || compras.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Nenhuma compra registrada.</td></tr>';
+            return;
+        }
+
+        // Monta as linhas da tabela dinamicamente
+        compras.forEach(compra => {
+            // Formata o número para o padrão de moeda brasileiro (R$)
+            let valorFormatado = compra.valor;
+            if (typeof compra.valor === 'number') {
+                valorFormatado = compra.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            } else if (!isNaN(parseFloat(compra.valor))) {
+                valorFormatado = parseFloat(compra.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            }
+
+            const tr = document.createElement('tr');
+            
+            // A ordem das colunas (Data, Descrição, Categoria, Cartão, Parcelas, Valor)
+            // Lembre-se: O Cartão é a 4ª coluna (índice 3), essencial para o Modo Foco funcionar!
+            tr.innerHTML = `
+                <td class="align-middle">${compra.data || '-'}</td>
+                <td class="align-middle">${compra.descricao || '-'}</td>
+                <td class="align-middle">${compra.categoria || '-'}</td>
+                <td class="align-middle">${compra.cartao || '-'}</td>
+                <td class="align-middle">${compra.parcelas || '-'}</td>
+                <td class="align-middle fw-bold text-end">${valorFormatado}</td>
+            `;
+            
+            tbody.appendChild(tr);
+        });
     }
     
     window.carregarOpcoesFormulario = function(cartoes) { 
