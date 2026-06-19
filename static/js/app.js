@@ -56,8 +56,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 3. MODO FOCO
     window.alternarModoFoco = function(id) {
+    // 3. MODO FOCO E FILTRO DE COMPRAS
+    window.alternarModoFoco = function(id) {
         const cards = document.querySelectorAll('.card-banco-item');
+        const linhasCompras = document.querySelectorAll('#compras-tabela tr');
+        
         modoFocoAtivo = !modoFocoAtivo;
+
+        // Filtra os Cards
         cards.forEach(card => {
             const cardId = card.querySelector('.badge').textContent.replace('#', '');
             if (modoFocoAtivo) {
@@ -68,8 +74,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 card.classList.replace('col-lg-12', 'col-lg-3');
             }
         });
-    }
 
+        // Filtra a Tabela de Compras
+        linhasCompras.forEach(linha => {
+            // Verifica se a linha tem dados (ignora a linha de "Carregando...")
+            if (linha.cells.length > 1) {
+                // A coluna "Cartao" é a 4ª coluna, ou seja, índice 3 (célula 4)
+                const idCartaoNaLinha = linha.cells[3].textContent.trim();
+                
+                if (modoFocoAtivo) {
+                    linha.style.display = (idCartaoNaLinha !== id) ? 'none' : '';
+                } else {
+                    linha.style.display = '';
+                }
+            }
+        });
+    }
     // 4. EDIÇÃO MODAL
     window.editarCartao = function(id, bancoAtual, limiteAtual) {
         document.getElementById('edit-id').value = id;
