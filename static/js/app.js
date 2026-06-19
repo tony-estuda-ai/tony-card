@@ -7,16 +7,26 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             const cartoes = data.cartoes || data || [];
             const compras = data.compras || [];
-            renderizarCartoes(cartoes);
-            renderizarTabela(compras);
-            carregarOpcoesFormulario(cartoes);
+            
+            // Renderiza apenas se as funções estiverem disponíveis
+            if (typeof window.renderizarCartoes === 'function') {
+                window.renderizarCartoes(cartoes);
+            }
+            if (typeof window.renderizarTabela === 'function') {
+                window.renderizarTabela(compras);
+            }
+            if (typeof window.carregarOpcoesFormulario === 'function') {
+                window.carregarOpcoesFormulario(cartoes);
+            }
         })
         .catch(error => console.error('Erro ao buscar dados:', error));
 
     // 2. RENDERIZA CARDS
-    function renderizarCartoes(cartoes) {
+    window.renderizarCartoes = function(cartoes) {
         const grid = document.getElementById('cartoes-grid');
+        if (!grid) return;
         grid.innerHTML = '';
+        
         const estilosBancos = {
             'credicitrus': { card: 'text-white', bg: 'style="background: linear-gradient(135deg, #004D40 0%, #00796B 100%); border: 1px solid #FF8F00;"', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-white-50', btn: 'btn-outline-light' },
             'itaú': { card: 'bg-white border-start border-warning border-4', bg: '', badge: 'bg-warning text-dark', bar: 'bg-warning', text: 'text-muted', btn: 'btn-outline-warning' },
@@ -34,7 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const progresso = limiteTotal > 0 ? (limiteUtilizado / limiteTotal) * 100 : 0;
             const nomeTratado = nome.toLowerCase();
             let config = estilosBancos['padrao'];
-            for (let key in estilosBancos) { if (nomeTratado.includes(key)) { config = estilosBancos[key]; break; } }
+            
+            for (let key in estilosBancos) { 
+                if (nomeTratado.includes(key)) { 
+                    config = estilosBancos[key]; 
+                    break; 
+                } 
+            }
 
             const cardHtml = `
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 card-banco-item" onclick="alternarModoFoco('${id}')" style="cursor: pointer;">
@@ -54,17 +70,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 3. MODO FOCO E FILTRO DE COMPRAS (VERSÃO NOME DO BANCO)
+    // 3. MODO FOCO E FILTRO
     window.alternarModoFoco = function(id) {
         const cards = document.querySelectorAll('.card-banco-item');
         const linhasCompras = document.querySelectorAll('#compras-tabela tr');
-        
         modoFocoAtivo = !modoFocoAtivo;
-
-        // Filtra os Cards e guarda o nome do banco do cartão clicado
         let nomeBancoClicado = "";
+
+        // Lógica de exibir/ocultar os cartões
         cards.forEach(card => {
             const cardId = card.querySelector('.badge').textContent.replace('#', '');
+            
+            // Salva o nome do banco se este for o cartão clicado
             if (cardId === id) {
                 nomeBancoClicado = card.querySelector('h3').textContent.trim();
             }
@@ -78,8 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Filtra a Tabela de Compras comparando pelo NOME do banco
+        // Lógica de exibir/ocultar linhas da tabela baseada no NOME do banco
         linhasCompras.forEach(linha => {
+            // Garante que é uma linha de dados (tem as células necessárias)
             if (linha.cells.length > 3) {
                 const nomeBancoNaLinha = linha.cells[3].textContent.trim();
                 
@@ -90,7 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
-    }    // 4. EDIÇÃO MODAL
+    }
+
+    // 4. EDIÇÃO MODAL
     window.editarCartao = function(id, bancoAtual, limiteAtual) {
         document.getElementById('edit-id').value = id;
         document.getElementById('edit-nome').value = bancoAtual;
@@ -107,6 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
         bootstrap.Modal.getInstance(document.getElementById('modalEdicao')).hide();
     };
 
-    function renderizarTabela(compras) { /* Mantém a lógica da tabela */ }
-    function carregarOpcoesFormulario(cartoes) { /* Mantém a lógica do select */ }
+    // 5. FUNÇÕES DE SUPORTE MANTIDAS
+    window.renderizarTabela = function(compras) { 
+        /* Mantém a estrutura para quando você for integrar a tabela real */ 
+    }
+    
+    window.carregarOpcoesFormulario = function(cartoes) { 
+        /* Mantém a estrutura para o formulário */ 
+    }
 });
