@@ -123,13 +123,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.confirmarEdicao = function() {
-        const id = document.getElementById('edit-id').value;
+        const id = parseInt(document.getElementById('edit-id').value);
         const novoNome = document.getElementById('edit-nome').value;
-        const novoLimite = document.getElementById('edit-limite').value;
-        alert("Edição enviada! ID: " + id + ", Nome: " + novoNome + ", Limite: " + novoLimite);
+        const novoLimite = parseFloat(document.getElementById('edit-limite').value);
+
+        // Envia os dados atualizados para o servidor Python salvar
+        fetch('/api/cartoes/editar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: id,
+                nome: novoNome,
+                limite: novoLimite
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'sucesso') {
+                alert("Alterações salvas com sucesso!");
+                window.location.reload(); // Recarrega a página para atualizar os valores na tela
+            } else {
+                alert("Erro ao salvar: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert("Erro de comunicação com o servidor.");
+        });
+
         bootstrap.Modal.getInstance(document.getElementById('modalEdicao')).hide();
     };
-
     // 5. FUNÇÕES DE SUPORTE MANTIDAS
     window.renderizarTabela = function(compras) { 
         const tbody = document.getElementById('compras-tabela');
