@@ -24,7 +24,7 @@ USUARIOS = {
 
 @app.route('/')
 def apresentacao():
-   return "Servidor conectado com sucesso!"
+   return render_template('apresentacao.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
