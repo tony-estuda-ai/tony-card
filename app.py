@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import json
 import os
 
-app = Flask(__name__)
+template_dir = os.path.abspath('templates')
+app = Flask(__name__, template_folder=template_dir)
 app.secret_key = 'tony_secret_key_2026'
 
 # Caminho para o banco de dados fictício
@@ -23,7 +24,7 @@ USUARIOS = {
 
 @app.route('/')
 def apresentacao():
-    return render_template('apresentacao.html')
+   return "Servidor conectado com sucesso!"
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
