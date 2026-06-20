@@ -57,6 +57,11 @@ def api_dados():
     dados = carregar_dados()
     return jsonify(dados)
 
+@app.route('/api/lista-cartoes')
+def api_lista_cartoes():
+    dados = carregar_dados() 
+    return jsonify(dados)
+
 # Rota de atualização (Corrigida e fora do if __name__)
 @app.route('/api/atualizar_cartao', methods=['POST'])
 def atualizar_cartao():
