@@ -45,6 +45,11 @@ def painel():
         return redirect(url_for('login'))
     return render_template('index.html', nome=session['usuario_nome'])
 
+@app.route('/cadastro-despesa')
+def pagina_cadastro():
+    if 'usuario_logado' not in session:
+        return redirect(url_for('login'))
+    return render_template('cadastro_despesa.html')
 @app.route('/api/dados')
 def api_dados():
     if 'usuario_logado' not in session:
