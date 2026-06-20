@@ -241,3 +241,21 @@ window.carregarCartoesParaSelect = function() {
 // Adiciona o evento para disparar ao abrir o modal de compra
 // Adiciona o evento para disparar ao abrir o modal de compra
 document.getElementById('modalCompra')?.addEventListener('show.bs.modal', window.carregarCartoesParaSelect);
+// 7. PREENCHIMENTO AUTOMÁTICO DO SELECT NA PÁGINA DE CADASTRO
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('cartao_id');
+    if (!select) return; // Só tenta rodar se o select existir na página
+
+    fetch('/api/dados') 
+        .then(res => res.json())
+        .then(data => {
+            select.innerHTML = '<option value="">Selecione o cartão...</option>';
+            data.cartoes.forEach(cartao => {
+                let opt = document.createElement('option');
+                opt.value = cartao.id;
+                opt.textContent = cartao.nome;
+                select.appendChild(opt);
+            });
+        })
+        .catch(err => console.error('Erro ao carregar cartões na página de cadastro:', err));
+});
