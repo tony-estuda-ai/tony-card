@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Controle de Cartoes</title>
+    <title>Controle de Cartões</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
@@ -16,23 +16,21 @@
               <div class="d-flex justify-content-between align-items-start mb-4">
                 <div>
                   <span class="badge text-bg-primary mb-2">Painel inicial</span>
-                  <h1 class="h3 mb-1">Controle de cartoes</h1>
+                  <h1 class="h3 mb-1">Controle de cartões</h1>
                 </div>
                 <div class="d-flex flex-column gap-2 text-end">
                   <div class="d-flex gap-2">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lancarCompraModal">➕ Lançar Compra</button>
-                    <!-- Link desativado para não dar erro 404 no GitHub Pages -->
-                    <button id="btn-api" class="btn btn-outline-primary" onclick="alert('Função API direta desativada. Os dados já vêm do Supabase.')">Ver dados da API</button>
+                    <button class="btn btn-outline-primary" onclick="alert('Função API direta desativada. Os dados já vêm do Supabase.')">Ver dados da API</button>
                   </div>
-                  <!-- Link ajustado -->
-                  <a href="#" class="btn btn-outline-danger btn-sm" onclick="alert('Função de saída será configurada via Supabase Auth.')">Sair do Painel</a>
+                  <a href="#" class="btn btn-outline-danger btn-sm" onclick="alert('O login/logout será configurado via Supabase Auth em breve.')">Sair do Painel</a>
                 </div>
               </div>
 
               <div class="mb-4">
-                <h2 class="h5 mb-3">Cartoes cadastrados</h2>
+                <h2 class="h5 mb-3">Cartões cadastrados</h2>
                 <div id="cartoes-grid" class="row g-3 pb-5">
-                   <div class="col-12">Carregando cartões diretamente do banco...</div>
+                   <div class="col-12">Carregando cartões...</div>
                 </div>
               </div>
 
@@ -41,7 +39,7 @@
                 <div class="table-responsive">
                   <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-light">
-                      <tr><th>Data</th><th>Descricao</th><th>Categoria</th><th>Cartao</th><th>Parcelas</th><th class="text-end">Valor</th></tr>
+                      <tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Cartão</th><th>Parcelas</th><th class="text-end">Valor</th></tr>
                     </thead>
                     <tbody id="compras-tabela">
                       <tr><td colspan="6" class="text-center py-4">Carregando compras...</td></tr>
@@ -55,28 +53,60 @@
       </section>
     </main>
 
-    <!-- ESTRUTURA DO MODAL INSERIDA AQUI -->
-    <div class="modal fade" id="lancarCompraModal" tabindex="-1" aria-labelledby="lancarCompraModalLabel" aria-hidden="true">
+    <div class="modal fade" id="lancarCompraModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title fs-5" id="lancarCompraModalLabel">Nova compra</h2>
+            <h2 class="modal-title fs-5">Nova compra</h2>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
           </div>
           <div class="modal-body">
-             <p class="text-muted">A estrutura do formulário foi restaurada. Os campos de lançamento entrarão aqui.</p>
+            <form id="form-nova-compra">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Data</label>
+                  <input type="date" class="form-control" id="compraData" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Valor (R$)</label>
+                  <input type="number" step="0.01" class="form-control" id="compraValor" placeholder="0,00" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Descrição</label>
+                  <input type="text" class="form-control" id="compraDescricao" placeholder="Ex: Supermercado" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Categoria</label>
+                  <select class="form-select" id="compraCategoria">
+                    <option>Alimentação</option>
+                    <option>Transporte</option>
+                    <option>Lazer</option>
+                    <option>Outros</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Cartão</label>
+                  <select class="form-select" id="compraCartao">
+                    <option>Cartão 1</option>
+                    <option>Cartão 2</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Parcelas</label>
+                  <input type="number" class="form-control" id="compraParcelas" value="1" min="1">
+                </div>
+              </div>
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary">Salvar compra</button>
+            <button type="button" class="btn btn-primary" onclick="alert('Pronto para conectar ao Supabase na próxima etapa!')">Salvar compra</button>
           </div>
         </div>
       </div>
     </div>
-    <!-- FIM DO MODAL -->
 
     <script>
-      // Conexão direta com o Supabase
       const supabase = supabase.createClient(
           'https://ymvhewteeeebvytqqbpi.supabase.co', 
           'sb_publishable_2ux_x8lm-Iv6ZfxxceFmDQ_JcmFLL'
@@ -90,6 +120,8 @@
               const { data: cartoes, error: erroCartoes } = await supabase.from('cartoes').select('*');
               const { data: compras, error: erroCompras } = await supabase.from('compras').select('*');
               
+              if (erroCartoes || erroCompras) throw new Error("Acesso negado pelo Supabase");
+
               if (cartoes && cartoes.length > 0) {
                   grid.innerHTML = cartoes.map(c => `
                     <div class="col-md-3"><div class="border rounded p-3 bg-white"><strong>${c.nome || 'Cartão'}</strong><br>Limite: R$${c.limite || '0,00'}</div></div>
@@ -106,8 +138,9 @@
                   tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma compra registrada.</td></tr>';
               }
           } catch (erro) {
-              console.error("Erro na consulta:", erro);
-              grid.innerHTML = '<div class="col-12 text-danger">Erro de conexão com o banco de dados.</div>';
+              console.error("Erro:", erro);
+              grid.innerHTML = '<div class="col-12 text-danger">Bloqueio de segurança do Supabase ativo.</div>';
+              tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Bloqueio de segurança do Supabase ativo.</td></tr>';
           }
       }
       
