@@ -25,7 +25,7 @@ def painel():
     return render_template('index.html')
 
 # --- ROTAS DA API ---
-@app.route('/api/lista-cartoes')
+@app.route('/api/dados')
 def api_lista_cartoes():
     response = supabase.table("cartoes").select("*").execute()
     return jsonify({"cartoes": response.data})
