@@ -21,9 +21,8 @@
                 <div class="d-flex flex-column gap-2 text-end">
                   <div class="d-flex gap-2">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lancarCompraModal">➕ Lançar Compra</button>
-                    <button class="btn btn-outline-primary" onclick="alert('Função API direta desativada. Os dados já vêm do Supabase.')">Ver dados da API</button>
                   </div>
-                  <a href="#" class="btn btn-outline-danger btn-sm" onclick="alert('O login/logout será configurado via Supabase Auth em breve.')">Sair do Painel</a>
+                  <a href="#" class="btn btn-outline-danger btn-sm" onclick="alert('O sistema de Login/Logout será ativado em breve.')">Sair do Painel</a>
                 </div>
               </div>
 
@@ -53,6 +52,7 @@
       </section>
     </main>
 
+    <!-- MODAL DE NOVA COMPRA -->
     <div class="modal fade" id="lancarCompraModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Valor (R$)</label>
-                  <input type="number" step="0.01" class="form-control" id="compraValor" placeholder="0,00" required>
+                  <input type="number" step="0.01" class="form-control" id="compraValor" placeholder="0.00" required>
                 </div>
                 <div class="col-12">
                   <label class="form-label">Descrição</label>
@@ -78,17 +78,17 @@
                 <div class="col-md-4">
                   <label class="form-label">Categoria</label>
                   <select class="form-select" id="compraCategoria">
-                    <option>Alimentação</option>
-                    <option>Transporte</option>
-                    <option>Lazer</option>
-                    <option>Outros</option>
+                    <option value="Alimentação">Alimentação</option>
+                    <option value="Transporte">Transporte</option>
+                    <option value="Lazer">Lazer</option>
+                    <option value="Outros">Outros</option>
                   </select>
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">Cartão</label>
                   <select class="form-select" id="compraCartao">
-                    <option>Cartão 1</option>
-                    <option>Cartão 2</option>
+                    <option value="Cartão 1">Cartão 1</option>
+                    <option value="Cartão 2">Cartão 2</option>
                   </select>
                 </div>
                 <div class="col-md-4">
@@ -100,7 +100,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary" onclick="alert('Pronto para conectar ao Supabase na próxima etapa!')">Salvar compra</button>
+            <button type="button" class="btn btn-primary" onclick="salvarCompra()">Salvar compra</button>
           </div>
         </div>
       </div>
@@ -117,14 +117,12 @@
           const tbody = document.getElementById('compras-tabela');
           
           try {
-              const { data: cartoes, error: erroCartoes } = await supabase.from('cartoes').select('*');
-              const { data: compras, error: erroCompras } = await supabase.from('compras').select('*');
+              const { data: cartoes } = await supabase.from('cartoes').select('*');
+              const { data: compras } = await supabase.from('compras').select('*');
               
-              if (erroCartoes || erroCompras) throw new Error("Acesso negado pelo Supabase");
-
               if (cartoes && cartoes.length > 0) {
                   grid.innerHTML = cartoes.map(c => `
-                    <div class="col-md-3"><div class="border rounded p-3 bg-white"><strong>${c.nome || 'Cartão'}</strong><br>Limite: R$${c.limite || '0,00'}</div></div>
+                    <div class="col-md-3"><div class="border rounded p-3 bg-white shadow-sm"><strong>${c.nome || 'Cartão'}</strong><br>Limite: R$ ${c.limite || '0.00'}</div></div>
                   `).join('');
               } else {
                   grid.innerHTML = '<div class="col-12 text-muted">Nenhum cartão encontrado.</div>';
@@ -132,15 +130,54 @@
               
               if (compras && compras.length > 0) {
                   tbody.innerHTML = compras.map(c => `
-                    <tr><td>${c.data}</td><td>${c.descricao}</td><td>${c.categoria}</td><td>${c.cartao}</td><td>${c.parcelas}</td><td class="text-end">R$${c.valor}</td></tr>
+                    <tr><td>${c.data}</td><td>${c.descricao}</td><td>${c.categoria}</td><td>${c.cartao}</td><td>${c.parcelas}</td><td class="text-end">R$ ${c.valor}</td></tr>
                   `).join('');
               } else {
                   tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma compra registrada.</td></tr>';
               }
           } catch (erro) {
-              console.error("Erro:", erro);
-              grid.innerHTML = '<div class="col-12 text-danger">Bloqueio de segurança do Supabase ativo.</div>';
-              tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-danger">Bloqueio de segurança do Supabase ativo.</td></tr>';
+              console.error("Erro ao carregar:", erro);
+          }
+      }
+
+      async function salvarCompra() {
+          const data = document.getElementById('compraData').value;
+          const valor = document.getElementById('compraValor').value;
+          const descricao = document.getElementById('compraDescricao').value;
+          const categoria = document.getElementById('compraCategoria').value;
+          const cartao = document.getElementById('compraCartao').value;
+          const parcelas = document.getElementById('compraParcelas').value;
+
+          if (!data || !valor || !descricao) {
+              alert("Por favor, preencha a Data, Valor e Descrição.");
+              return;
+          }
+
+          const { error } = await supabase.from('compras').insert([
+              { 
+                  data: data, 
+                  valor: parseFloat(valor), 
+                  descricao: descricao, 
+                  categoria: categoria, 
+                  cartao: cartao, 
+                  parcelas: parseInt(parcelas) 
+              }
+          ]);
+
+          if (error) {
+              alert("Erro ao salvar: " + error.message);
+              console.error(error);
+          } else {
+              // Limpa o formulário
+              document.getElementById('form-nova-compra').reset();
+              
+              // Esconde a janela modal
+              const modalElement = document.getElementById('lancarCompraModal');
+              const modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+              modalInstance.hide();
+              
+              // Recarrega a tabela para mostrar a compra nova na hora
+              carregarDados();
           }
       }
       
