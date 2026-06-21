@@ -105,6 +105,7 @@
           const selectCartao = document.getElementById('compraCartao');
           
           try {
+            console.log("Tentando conectar ao Supabase...");
               const { data: cartoes, error: errC } = await supabase.from('cartoes').select('*');
               const { data: compras, error: errP } = await supabase.from('compras').select('*');
               
@@ -130,6 +131,7 @@
           } catch (erro) {
               console.error("Erro completo:", erro);
               alert("Erro na conexão: " + erro.message);
+            console.log("Fim da tentativa de conexão.");
           }
       }
 
