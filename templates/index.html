@@ -4,12 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Controle de Cartoes</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body class="bg-light">
     <main class="container py-4 py-md-5">
@@ -17,72 +13,45 @@
         <div class="col-12 col-lg-10">
           <div class="card shadow-sm border-0">
             <div class="card-body p-4 p-md-5">
-<div class="d-flex justify-content-between align-items-start mb-4">
-    <div>
-        <span class="badge text-bg-primary mb-2">Painel inicial</span>
-        <h1 class="h3 mb-1">Controle de cartoes</h1>
-        <p class="text-secondary mb-0">Estrutura base pronta para conectar os dados do backend ao frontend.</p>
-    </div>
-    
-    <div class="d-flex flex-column gap-2 text-end">
+              <div class="d-flex justify-content-between align-items-start mb-4">
+                <div>
+                  <span class="badge text-bg-primary mb-2">Painel inicial</span>
+                  <h1 class="h3 mb-1">Controle de cartoes</h1>
+                  <p class="text-secondary mb-0">Estrutura base pronta para conectar os dados do backend ao frontend.</p>
+                </div>
+                <div class="d-flex flex-column gap-2 text-end">
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lancarCompraModal">➕ Lançar Compra</button>
+                    <button id="btn-api" class="btn btn-outline-primary">Ver dados da API</button>
+                  </div>
+                  <a href="/sair" class="btn btn-outline-danger btn-sm">Sair do Painel</a>
+                </div>
+              </div>
 
-<div class="d-flex gap-2">
-    <a href="/cadastro-despesa" class="btn btn-primary">➕ Lançar Compra</a>
-    <a href="/api/dados" class="btn btn-outline-primary">Ver dados da API</a>
-</div>
-        <a href="/sair" class="btn btn-outline-danger btn-sm">Sair do Painel</a>
-    </div>
-</div>
-              <!-- SEÇÃO DE CARTOES COM FILTRO POR BANCO -->
               <div class="mb-4">
                 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-3">
                   <h2 class="h5 mb-0">Cartoes cadastrados</h2>
-                  <div style="min-width: 200px;">
-                    <select id="filtro-banco" class="form-select form-select-sm">
-                      <option value="">🔍 Filtrar por Banco: Todos</option>
-                      <option value="Nubank">Nubank</option>
-                      <option value="Banco Inter">Banco Inter</option>
-                      <option value="Banco do Brasil">Banco do Brasil</option>
-                      <option value="Itaú">Itaú</option>
-                      <option value="Caixa Econômica Federal">Caixa Econômica Federal</option>
-                      <option value="Bradesco">Bradesco</option>
-                      <option value="Santander">Santander</option>
+                  <select id="filtro-banco" class="form-select form-select-sm" style="min-width: 200px;">
+                    <option value="">🔍 Filtrar por Banco: Todos</option>
                     </select>
-                  </div>
                 </div>
                 <div id="cartoes-grid" class="row g-3 pb-5">
-                  <div class="col-12 col-md-4 col-lg-3">
-                    <div class="border rounded-3 p-3 h-100 bg-white">
-                      <h3 class="h6 mb-1">Carregando cartoes...</h3>
-                      <p class="mb-0 text-secondary">Aguarde enquanto buscamos os dados da API.</p>
-                    </div>
-                  </div>
-                </div>
+                   </div>
               </div>
 
               <div class="mt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <h2 class="h5 mb-0">Compras recentes</h2>
-                  <span class="text-secondary small">Tabela vinculada aos cartoes</span>
                 </div>
                 <div class="table-responsive">
                   <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-light">
                       <tr>
-                        <th scope="col">Data</th>
-                        <th scope="col">Descricao</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Cartao</th>
-                        <th scope="col">Parcelas</th>
-                        <th scope="col" class="text-end">Valor</th>
+                        <th>Data</th><th>Descricao</th><th>Categoria</th><th>Cartao</th><th>Parcelas</th><th class="text-end">Valor</th>
                       </tr>
                     </thead>
                     <tbody id="compras-tabela">
-                      <tr>
-                        <td colspan="6" class="text-center text-secondary py-4">
-                          Carregando compras...
-                        </td>
-                      </tr>
+                      <tr><td colspan="6" class="text-center py-4">Carregando compras...</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -93,134 +62,23 @@
       </section>
     </main>
 
-    <div
-      class="modal fade"
-      id="lancarCompraModal"
-      tabindex="-1"
-      aria-labelledby="lancarCompraModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2 class="modal-title fs-5" id="lancarCompraModalLabel">Nova compra</h2>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-          </div>
-          <form id="lancar-compra-form">
-            <div class="modal-body">
-              <div id="form-feedback" class="alert alert-danger d-none" role="alert"></div>
-              <div class="row g-3">
-                <div class="col-12 col-md-6">
-                  <label for="data-compra" class="form-label">Data da Compra</label>
-                  <input type="date" class="form-control" id="data-compra" name="data" required>
-                </div>
-                <div class="col-12 col-md-6">
-                  <label for="categoria-compra" class="form-label">Categoria</label>
-                  <select class="form-select" id="categoria-compra" name="categoria" required>
-                    <option value="">Selecione</option>
-                    <option value="Alimentação">Alimentação</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Lazer">Lazer</option>
-                    <option value="Saúde">Saúde</option>
-                    <option value="Serviços">Serviços</option>
-                    <option value="Outros">Outros</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label for="descricao-compra" class="form-label">Descricao</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="descricao-compra"
-                    name="descricao"
-                    placeholder="Ex: Posto Shell"
-                    required
-                  >
-                </div>
-                <div class="col-12">
-                  <label for="cartao-compra" class="form-label">Cartao de Credito</label>
-                  <select class="form-select" id="cartao-compra" name="cartao_id" required>
-                    <option value="">Carregando cartoes...</option>
-                  </select>
-                </div>
-                <div class="col-12 col-md-6">
-                  <label for="valor-compra" class="form-label">Valor (R$)</label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="valor-compra"
-                    name="valor"
-                    step="0.01"
-                    min="0.01"
-                    placeholder="0,00"
-                    required
-                  >
-                </div>
-                <div class="col-12 col-md-6">
-                  <label for="parcelas-compra" class="form-label">Parcelas</label>
-                  <select class="form-select" id="parcelas-compra" name="parcelas" required>
-                    <option value="1">1x (A vista)</option>
-                    <option value="2">2x</option>
-                    <option value="3">3x</option>
-                    <option value="4">4x</option>
-                    <option value="5">5x</option>
-                    <option value="6">6x</option>
-                    <option value="7">7x</option>
-                    <option value="8">8x</option>
-                    <option value="9">9x</option>
-                    <option value="10">10x</option>
-                    <option value="11">11x</option>
-                    <option value="12">12x</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary" id="salvar-compra-btn">
-                Salvar compra
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    <script>
+      // Conexão direta com seu banco no Supabase
+      const supabase = supabase.createClient(
+          'https://ymvhewteeeebvytqqbpi.supabase.co', 
+          'sb_publishable_2ux_x8lm-Iv6ZfxxceFmDQ_JcmFLL'
+      );
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
- <div class="modal fade" id="modalEdicao" tabindex="-1" aria-labelledby="modalEdicaoLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalEdicaoLabel">Editar Cartão</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="edit-id">
-        <div class="mb-3">
-          <label for="edit-nome" class="form-label">Nome do Banco</label>
-          <input type="text" class="form-control" id="edit-nome">
-        </div>
-        <div class="mb-3">
-          <label for="edit-limite" class="form-label">Limite Total</label>
-          <input type="number" class="form-control" id="edit-limite">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" onclick="confirmarEdicao()">Salvar Alterações</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-</body>
-</html>   
+      async function carregarTudo() {
+          const { data: cartoes } = await supabase.from('cartoes').select('*');
+          const { data: compras } = await supabase.from('compras').select('*');
+          
+          // Lógica para renderizar na sua tabela e grid original...
+          console.log("Dados carregados diretamente:", cartoes, compras);
+      }
+      
+      carregarTudo();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
