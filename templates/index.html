@@ -17,38 +17,29 @@
                 <div>
                   <span class="badge text-bg-primary mb-2">Painel inicial</span>
                   <h1 class="h3 mb-1">Controle de cartoes</h1>
-                  <p class="text-secondary mb-0">Estrutura base pronta para conectar os dados do backend ao frontend.</p>
                 </div>
                 <div class="d-flex flex-column gap-2 text-end">
                   <div class="d-flex gap-2">
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#lancarCompraModal">➕ Lançar Compra</button>
-                    <button id="btn-api" class="btn btn-outline-primary">Ver dados da API</button>
+                    <button id="btn-api" class="btn btn-outline-primary" onclick="window.location.href='/api/dados'">Ver dados da API</button>
                   </div>
                   <a href="/sair" class="btn btn-outline-danger btn-sm">Sair do Painel</a>
                 </div>
               </div>
 
               <div class="mb-4">
-                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-3">
-                  <h2 class="h5 mb-0">Cartoes cadastrados</h2>
-                  <select id="filtro-banco" class="form-select form-select-sm" style="min-width: 200px;">
-                    <option value="">🔍 Filtrar por Banco: Todos</option>
-                    </select>
-                </div>
+                <h2 class="h5 mb-3">Cartoes cadastrados</h2>
                 <div id="cartoes-grid" class="row g-3 pb-5">
-                   </div>
+                   <div class="col-12">Carregando cartões diretamente do banco...</div>
+                </div>
               </div>
 
               <div class="mt-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h2 class="h5 mb-0">Compras recentes</h2>
-                </div>
+                <h2 class="h5 mb-3">Compras recentes</h2>
                 <div class="table-responsive">
                   <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-light">
-                      <tr>
-                        <th>Data</th><th>Descricao</th><th>Categoria</th><th>Cartao</th><th>Parcelas</th><th class="text-end">Valor</th>
-                      </tr>
+                      <tr><th>Data</th><th>Descricao</th><th>Categoria</th><th>Cartao</th><th>Parcelas</th><th class="text-end">Valor</th></tr>
                     </thead>
                     <tbody id="compras-tabela">
                       <tr><td colspan="6" class="text-center py-4">Carregando compras...</td></tr>
@@ -63,21 +54,33 @@
     </main>
 
     <script>
-      // Conexão direta com seu banco no Supabase
+      // Conexão direta - O Render não é mais o dono dos dados!
       const supabase = supabase.createClient(
           'https://ymvhewteeeebvytqqbpi.supabase.co', 
           'sb_publishable_2ux_x8lm-Iv6ZfxxceFmDQ_JcmFLL'
       );
 
-      async function carregarTudo() {
+      async function carregarDados() {
+          const grid = document.getElementById('cartoes-grid');
+          const tbody = document.getElementById('compras-tabela');
+          
           const { data: cartoes } = await supabase.from('cartoes').select('*');
           const { data: compras } = await supabase.from('compras').select('*');
           
-          // Lógica para renderizar na sua tabela e grid original...
-          console.log("Dados carregados diretamente:", cartoes, compras);
+          if (cartoes) {
+              grid.innerHTML = cartoes.map(c => `
+                <div class="col-md-3"><div class="border rounded p-3 bg-white"><strong>${c.nome}</strong><br>Limite: R$${c.limite}</div></div>
+              `).join('');
+          }
+          
+          if (compras) {
+              tbody.innerHTML = compras.map(c => `
+                <tr><td>${c.data}</td><td>${c.descricao}</td><td>${c.categoria}</td><td>${c.cartao}</td><td>${c.parcelas}</td><td class="text-end">R$${c.valor}</td></tr>
+              `).join('');
+          }
       }
       
-      carregarTudo();
+      carregarDados();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
